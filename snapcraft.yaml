@@ -1,0 +1,56 @@
+name: pcsx2-mts
+version: git
+grade: stable
+confinement: strict
+
+architectures:
+  - build on: i386
+  - build on: amd64
+
+summary: Sony PlayStation 2 emulator.
+description: |
+ PCSX2 is a Playstation 2 'emulator'.
+
+parts:
+
+  pcsx2:
+    source: https://github.com/PCSX2/pcsx2.git
+    plugin: cmake
+    configflags: [-DCMAKE_BUILD_TYPE=Release, -DCMAKE_BUILD_STRIP=FALSE, -DXDG_STD=TRUE, -DDISABLE_ADVANCE_SIMD=TRUE, -DPACKAGE_MODE=TRUE, -DGSDX_LEGACY=TRUE]
+    build-packages: [libaio-dev, libasound2-dev, libbz2-dev, libegl1-mesa-dev, libgl1-mesa-dev, libglew-dev, libglu1-mesa-dev, libgtk2.0-dev, libjpeg-dev, libsdl2-dev, libsoundtouch-dev, libsparsehash-dev, libwxbase3.0-dev, libwxgtk3.0-dev, libx11-dev, nvidia-cg-dev, portaudio19-dev, zlib1g-dev, libpng++-dev, libpng-dev, liblzma-dev, libudev-dev]
+    stage-packages: [libaio1, libasound2, libc6, libgcc1, libgdk-pixbuf2.0-0, libgl1-mesa-glx, libglib2.0-0, libgtk2.0-0, liblzma5, libpng12-0, libportaudio2, libsdl2-2.0-0, libsoundtouch1, libstdc++6, libwxbase3.0-0v5, libwxgtk3.0-0v5, libx11-6, zlib1g ]
+    after: [desktop-gtk2]
+
+plugs:
+
+  gtk-3-themes:
+    interface: content
+    target: $SNAP/data-dir/themes
+    default-provider: gtk-common-themes:gtk-3-themes
+    
+  gtk-2-themes:
+    interface: content
+    target: $SNAP/data-dir/themes
+    default-provider: gtk-common-themes:gtk-2-themes
+    
+  icon-themes:
+    interface: content
+    target: $SNAP/data-dir/icons
+    default-provider: gtk-common-themes:icon-themes
+    
+  sound-themes:
+    interface: content
+    target: $SNAP/data-dir/sounds
+    default-provider: gtk-common-themes:sounds-themes
+
+apps:
+
+  pcsx2-tabetai: 
+    command: desktop-launch $SNAP/bin/PCSX2
+    plugs: [network, network-bind, x11, opengl, home, alsa, pulseaudio, bluez, joystick, raw-usb, removable-media, wayland, unity7]
+    desktop: share/applications/PCSX2.desktop
+    environment:
+      # Fallback to XWayland if running in a Wayland session.
+      DISABLE_WAYLAND: 1
+      HOME: "$SNAP_USER_COMMON"
+      LD_LIBRARY_PATH: "$LD_LIBRARY_PATH:$SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/blas:$SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/pulseaudio"
