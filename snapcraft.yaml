@@ -2,9 +2,9 @@ name: pcsx2-mts
 version: git
 grade: stable
 confinement: strict
+core: 18
 
 architectures:
-  - build on: i386
   - build on: amd64
 
 summary: Sony PlayStation 2 emulator.
@@ -49,8 +49,3 @@ apps:
     command: desktop-launch $SNAP/bin/PCSX2
     plugs: [network, network-bind, x11, opengl, home, alsa, pulseaudio, bluez, joystick, raw-usb, removable-media, wayland, unity7]
     desktop: share/applications/PCSX2.desktop
-    environment:
-      # Fallback to XWayland if running in a Wayland session.
-      DISABLE_WAYLAND: 1
-      HOME: "$SNAP_USER_COMMON"
-      LD_LIBRARY_PATH: "$LD_LIBRARY_PATH:$SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/blas:$SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/pulseaudio"
