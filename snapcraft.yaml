@@ -2,7 +2,7 @@ name: pcsx2-mts
 version: git
 grade: stable
 confinement: strict
-core: 18
+base: core18
 
 architectures:
   - build on: amd64
